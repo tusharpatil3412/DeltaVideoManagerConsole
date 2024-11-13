@@ -1,0 +1,118 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\.netproject\\AddTimeStampConsole\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9B159FBB-DE7B-4BEE-AC6F-B0F58611EAA7}|AddTimeStampConsole\\AddTimeStampConsole.csproj|C:\\.netproject\\AddTimeStampConsole\\addtimestampconsole\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B159FBB-DE7B-4BEE-AC6F-B0F58611EAA7}|AddTimeStampConsole\\AddTimeStampConsole.csproj|solutionrelative:addtimestampconsole\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\bin\\Debug\\net8.0\\Logger.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:AddTimeStampConsole\\bin\\Debug\\net8.0\\Logger.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B159FBB-DE7B-4BEE-AC6F-B0F58611EAA7}|AddTimeStampConsole\\AddTimeStampConsole.csproj|C:\\.netproject\\AddTimeStampConsole\\addtimestampconsole\\logger.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{9B159FBB-DE7B-4BEE-AC6F-B0F58611EAA7}|AddTimeStampConsole\\AddTimeStampConsole.csproj|solutionrelative:addtimestampconsole\\logger.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B159FBB-DE7B-4BEE-AC6F-B0F58611EAA7}|AddTimeStampConsole\\AddTimeStampConsole.csproj|C:\\.netproject\\AddTimeStampConsole\\addtimestampconsole\\constants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9B159FBB-DE7B-4BEE-AC6F-B0F58611EAA7}|AddTimeStampConsole\\AddTimeStampConsole.csproj|solutionrelative:addtimestampconsole\\constants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B159FBB-DE7B-4BEE-AC6F-B0F58611EAA7}|AddTimeStampConsole\\AddTimeStampConsole.csproj|C:\\.netproject\\AddTimeStampConsole\\addtimestampconsole\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9B159FBB-DE7B-4BEE-AC6F-B0F58611EAA7}|AddTimeStampConsole\\AddTimeStampConsole.csproj|solutionrelative:addtimestampconsole\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Logger.config",
+              "DocumentMoniker": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\bin\\Debug\\net8.0\\Logger.config",
+              "RelativeDocumentMoniker": "AddTimeStampConsole\\bin\\Debug\\net8.0\\Logger.config",
+              "ToolTip": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\bin\\Debug\\net8.0\\Logger.config",
+              "RelativeToolTip": "AddTimeStampConsole\\bin\\Debug\\net8.0\\Logger.config",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2024-11-12T13:12:39.709Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Logger.config",
+              "DocumentMoniker": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\Logger.config",
+              "RelativeDocumentMoniker": "AddTimeStampConsole\\Logger.config",
+              "ToolTip": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\Logger.config",
+              "RelativeToolTip": "AddTimeStampConsole\\Logger.config",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2024-11-12T10:57:32.245Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Constants.cs",
+              "DocumentMoniker": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\Constants.cs",
+              "RelativeDocumentMoniker": "AddTimeStampConsole\\Constants.cs",
+              "ToolTip": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\Constants.cs",
+              "RelativeToolTip": "AddTimeStampConsole\\Constants.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-12T10:21:32.302Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\Program.cs",
+              "RelativeDocumentMoniker": "AddTimeStampConsole\\Program.cs",
+              "ToolTip": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\Program.cs",
+              "RelativeToolTip": "AddTimeStampConsole\\Program.cs",
+              "ViewState": "AQIAADcAAAAAAAAAAAAgwFUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T12:43:09.076Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\appsettings.json",
+              "RelativeDocumentMoniker": "AddTimeStampConsole\\appsettings.json",
+              "ToolTip": "C:\\.netproject\\AddTimeStampConsole\\AddTimeStampConsole\\appsettings.json",
+              "RelativeToolTip": "AddTimeStampConsole\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-10-23T10:46:43.473Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,13 @@ using Xabe.FFmpeg;
 using log4net;
 using log4net.Config;
 using System.Reflection;
+using System.Diagnostics;
+using Azure.AI.Vision.ImageAnalysis;
+using Azure;
+using System.Text.RegularExpressions;
+using log4net.Repository.Hierarchy;
+using FFMpegCore.Pipes;
+using System.IO;
 //Console.WriteLine("Hello, World!");
 //var inputVideoPath = string.Empty;// read from appsettings.json file
 //Read all video files from inputVideoPath 
@@ -23,9 +30,9 @@ class Program
         {
             //BasicConfigurator.Configure();
             //var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
-            var configFilePath = Path.Combine(AppContext.BaseDirectory, "Logger.config");
+           // FFmpeg.SetExecutablesPath(@"..\..\..\FFmpeg"); // Update this path as needed
 
-
+            var configFilePath = @"..\..\..\Logger.config";
             if (File.Exists(configFilePath))
             {
                 XmlConfigurator.Configure(new FileInfo(configFilePath));
@@ -97,25 +104,37 @@ class Program
                     {
                         Console.WriteLine($"Processing video: {videoFile}");
                         log.Info($"Processing video: {videoFile}");
-                        var outputFile = CreateOutputDirectory(inputVideoPath, videoFile, outputVideoPath);
 
-                        // Process the video and add a timestamp
-                        try
+                        if (!await CheckIsTimestampExists(videoFile))
                         {
-                            await AddTimestampToVideo(videoFile, outputFile);
-                            //Delete input file
-                            File.Delete(videoFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            //Move file to output directory
-                            Console.WriteLine($"Error processing video {videoFile}: {ex.Message}");
-                            log.Error($"Error processing video {videoFile}: {ex.Message}");
-                            if (File.Exists(outputFile))
+                            
+                            var outputFile = CreateOutputDirectory(inputVideoPath, videoFile, outputVideoPath);
+
+                            // Process the video and add a timestamp
+                            try
                             {
-                                File.Delete(outputFile); // Delete the destination file if it already exists
+                                await AddTimestampToVideo(videoFile, outputFile);
+                                //Delete input file
+                                File.Delete(videoFile);
                             }
+                            catch (Exception ex)
+                            {
+                                //Move file to output directory
+                                Console.WriteLine($"Error processing video {videoFile}: {ex.Message}");
+                                log.Error($"Error processing video {videoFile}: {ex.Message}");
+                                if (File.Exists(outputFile))
+                                {
+                                    File.Delete(outputFile); // Delete the destination file if it already exists
+                                }
+                                File.Move(videoFile, outputFile);
+                            }
+                        }
+                        else
+                        {
+                            var outputFile = CreateOutputDirectory(inputVideoPath, videoFile, outputVideoPath);
                             File.Move(videoFile, outputFile);
+                            Console.WriteLine($"Video file has Timestamp Detected, {videoFile} ");
+                            log.Info($"Video file has Timestamp Detected, {videoFile} ");
                         }
                     }
                     else
@@ -146,7 +165,7 @@ class Program
     // Function to add a timestamp to the video
     static async Task AddTimestampToVideo(string inputFile, string outputFile)
     {
-
+        
         var mediaInfo = await FFmpeg.GetMediaInfo(inputFile);
 
         if (mediaInfo.CreationTime.HasValue)
@@ -216,5 +235,124 @@ class Program
             Directory.CreateDirectory(outputDir);
         }
         return outputFile;
+    }
+
+static async Task<bool> CheckIsTimestampExists(string filePath)
+{
+    // Get media information using FFmpeg
+    var mediaInfo = await FFmpeg.GetMediaInfo(filePath);
+
+    // Split the video into 5 intervals for frame capture
+    int frameCount = 5;
+    int timeInterval = (int)Math.Floor(mediaInfo.Duration.TotalSeconds / frameCount);
+    int[] captureTimes = Enumerable.Range(0, frameCount).Select(i => timeInterval * i + 1).ToArray();
+
+    // Set up Azure Cognitive Services client
+    string endpoint = "https://handwritten-poc.cognitiveservices.azure.com/";
+    string key = "0e04fa88a25a421d87bd3f7b5796513e";
+    ImageAnalysisClient client = new ImageAnalysisClient(
+        new Uri(endpoint),
+        new AzureKeyCredential(key));
+
+    // Counter for frames with detected timestamps
+    int timestampCount = 0;
+
+        foreach (var (time, index) in captureTimes.Select((time, index) => (time, index + 1)))
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                var ffmpeg = new ProcessStartInfo
+                {
+                    FileName = "ffmpeg",
+                    Arguments = $"-ss {time} -i \"{filePath}\" -frames:v 1 -f image2pipe -vcodec png -",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                try
+                {
+                    using (var process = Process.Start(ffmpeg))
+                    {
+                        if (process != null)
+                        {
+                            await process.StandardOutput.BaseStream.CopyToAsync(memoryStream);
+                            process.WaitForExit();
+                        }
+                    }
+
+                    byte[] imageData = memoryStream.ToArray();
+                    bool hasTimestamp = await AnalyzeImage(client, imageData, index);
+
+                    if (hasTimestamp)
+                    {
+                        Console.WriteLine($"Timestamp detected in frame {index}");
+                        timestampCount++; // Increment the counter if a timestamp is detected
+                    }
+                    else
+                    {
+                        Console.WriteLine($"No timestamp detected in frame {index}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error capturing frame at {time} seconds: {ex.Message}");
+                }
+            }
+        }
+
+        // Check if the timestamp count is 3 or more
+        if (timestampCount >= 3)
+        {
+            Console.WriteLine($"Timestamps were detected in{timestampCount}");
+            return true ;
+        }
+        else
+        {
+            Console.WriteLine("Timestamps were detected in less than 3 frames.");
+            return false;
+        }
+
+        
+}
+
+    static async Task<bool> AnalyzeImage(ImageAnalysisClient client, byte[] imageData, int index)
+    {
+        try
+        {
+            BinaryData binaryData = BinaryData.FromBytes(imageData);
+            ImageAnalysisResult result = client.Analyze(
+                binaryData,
+                VisualFeatures.Caption | VisualFeatures.Read,
+                new ImageAnalysisOptions { GenderNeutralCaption = true });
+
+            Console.WriteLine($"Results for Frame {index}:");
+
+            // Regular expression to match common date and timestamp formats
+            var datePattern = new Regex(@"\b(\d{1,2}([.:]\d{2}){0,2}(AM|PM)?|\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?|(\w{3,9}) \d{1,2},? \d{4})\b", RegexOptions.IgnoreCase);
+
+
+            // Process detected text and check for date/timestamp format
+            foreach (DetectedTextBlock block in result.Read.Blocks)
+            {
+                foreach (DetectedTextLine line in block.Lines)
+                {
+                    Console.WriteLine($"   Line: '{line.Text}', Bounding Polygon: [{string.Join(" ", line.BoundingPolygon)}]");
+
+                    // Check if the line text matches the date pattern
+                    if (datePattern.IsMatch(line.Text))
+                    {
+                        Console.WriteLine("   Date or timestamp detected!");
+                        return true; // Return true if a date/timestamp is found
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error processing frame {index}: {ex.Message}");
+        }
+
+        return false; // Return false if no date/timestamp is detected
     }
 }

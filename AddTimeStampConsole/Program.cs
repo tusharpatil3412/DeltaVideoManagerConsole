@@ -8,15 +8,9 @@ using System.Diagnostics;
 using Azure.AI.Vision.ImageAnalysis;
 using Azure;
 using System.Text.RegularExpressions;
-using log4net.Repository.Hierarchy;
-using FFMpegCore.Pipes;
-using System.IO;
-//Console.WriteLine("Hello, World!");
-//var inputVideoPath = string.Empty;// read from appsettings.json file
-//Read all video files from inputVideoPath 
-//Convert/Add timestamp in video
-//Save it into outputVideoPath
-//var outputVideoPath = string.Empty;// read from appsettings.json file
+using FFMpegCore.Enums;
+
+
 
 class Program
 {
@@ -30,7 +24,7 @@ class Program
         {
             //BasicConfigurator.Configure();
             //var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
-           // FFmpeg.SetExecutablesPath(@"..\..\..\FFmpeg"); // Update this path as needed
+            //FFmpeg.SetExecutablesPath(@"..\..\..\FFmpeg"); // Update this path as needed
 
             var configFilePath = @"..\..\..\Logger.config";
             if (File.Exists(configFilePath))
@@ -64,7 +58,7 @@ class Program
                 Directory.CreateDirectory(outputVideoPath);
             }
 
-            string[] videoExtensions = { ".mp4", ".mov", ".avi", ".mkv", ".wmv", ".mts" };
+            string[] videoExtensions = { ".mp4", ".mov", ".avi", ".mkv", ".wmv", ".mts",".webm" };
 
             foreach (string dir in Directory.EnumerateDirectories(inputVideoPath, "*", SearchOption.AllDirectories))
             {
@@ -100,6 +94,7 @@ class Program
 
                 foreach (var videoFile in videoFiles)
                 {
+                    
                     if (CheckIsFileNotInUse(videoFile))
                     {
                         Console.WriteLine($"Processing video: {videoFile}");
@@ -190,6 +185,7 @@ class Program
         {
             Console.WriteLine("No creation time found for this video.");
             log.Error("No creation time found for this video");
+            File.Move(inputFile, outputFile);
         }
 
     }
@@ -241,7 +237,7 @@ static async Task<bool> CheckIsTimestampExists(string filePath)
 {
     // Get media information using FFmpeg
     var mediaInfo = await FFmpeg.GetMediaInfo(filePath);
-
+    
     // Split the video into 5 intervals for frame capture
     int frameCount = 5;
     int timeInterval = (int)Math.Floor(mediaInfo.Duration.TotalSeconds / frameCount);
@@ -342,7 +338,7 @@ static async Task<bool> CheckIsTimestampExists(string filePath)
                     // Check if the line text matches the date pattern
                     if (datePattern.IsMatch(line.Text))
                     {
-                        Console.WriteLine("   Date or timestamp detected!");
+                        Console.WriteLine(" Date or timestamp detected!");
                         return true; // Return true if a date/timestamp is found
                     }
                 }

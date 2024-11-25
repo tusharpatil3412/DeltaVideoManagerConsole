@@ -25,6 +25,7 @@ class Program
             //BasicConfigurator.Configure();
             //var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
             //FFmpeg.SetExecutablesPath(@"..\..\..\FFmpeg"); // Update this path as needed
+            
 
             var configFilePath = @"..\..\..\Logger.config";
             if (File.Exists(configFilePath))
@@ -63,7 +64,7 @@ class Program
             foreach (string dir in Directory.EnumerateDirectories(inputVideoPath, "*", SearchOption.AllDirectories))
             {
                 // Get all .mp4 video files in the directory and subdirectories
-                //var videoFiles = Directory.GetFiles(dir, "*.mp4", SearchOption.AllDirectories);
+                
                 var videoFiles = Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories)
                                               .Where(file => videoExtensions.Contains(Path.GetExtension(file).ToLower()));
 
@@ -165,21 +166,63 @@ class Program
 
         if (mediaInfo.CreationTime.HasValue)
         {
-            var creationTimeOffset = new DateTimeOffset(mediaInfo.CreationTime.Value);
-            long unixTimestamp = creationTimeOffset.ToUnixTimeSeconds();
-            Console.WriteLine($"Unix Timestamp: {unixTimestamp}");
+            string pattern = @"\\(\d+)-"; // Matches numbers before the first hyphen
+            Match match = Regex.Match(inputFile, pattern);
 
-            string timestampFilter = $"drawtext=fontcolor=white:fontsize=16:box=1:boxcolor=black: x=10:y=10: text='%{{pts\\:gmtime\\:{unixTimestamp}\\:%d, %B %Y %I\\\\\\:%M\\\\\\:%S %p}}'";
+            if (match.Success)
+            {
+                // Extract the number and convert it to an integer
+                string extractedNumberString = match.Groups[1].Value;
+                Console.WriteLine($"Extracted Number: {extractedNumberString}");
 
-            var conversion = FFmpeg.Conversions.New()
-                .AddParameter($"-i \"{inputFile}\"")
-                .AddParameter($"-vf \"{timestampFilter}\"")
-                .AddParameter("-preset ultrafast")
-                .AddParameter($"\"{outputFile}\"");
+                if (int.TryParse(extractedNumberString, out int extractedNumber))
+                {
+                    CaseTrackerDbConnection dbHelper = new CaseTrackerDbConnection();
 
-            await conversion.Start();
-            Console.WriteLine($"Video saved to: {outputFile}");
-            log.Info($"Vidio saved to : {outputFile}");
+                    // Call the async method to get the record
+                    DateTime? creationTime = await dbHelper.GetRecordByCodeAsync(extractedNumber, mediaInfo.CreationTime.Value);
+
+                    if (creationTime.HasValue)
+                    {
+                        // Convert the DateTime to DateTimeOffset
+                        DateTimeOffset creationTimeOffset = new DateTimeOffset(creationTime.Value, TimeSpan.Zero);
+
+                        // Convert to Unix timestamp
+                        long unixTimestamp = creationTimeOffset.ToUnixTimeSeconds();
+
+                        Console.WriteLine($"Unix Timestamp: {unixTimestamp}");
+                        string timestampFilter = $"drawtext=fontcolor=white:fontsize=16:box=1:boxcolor=black: x=10:y=10: text='%{{pts\\:gmtime\\:{unixTimestamp}\\:%d, %B %Y %I\\\\\\:%M\\\\\\:%S %p}}'";
+
+                        var conversion = FFmpeg.Conversions.New()
+                            .AddParameter($"-i \"{inputFile}\"")
+                            .AddParameter($"-vf \"{timestampFilter}\"")
+                            .AddParameter("-preset ultrafast")
+                            .AddParameter($"\"{outputFile}\"");
+
+                        await conversion.Start();
+                        Console.WriteLine($"Video saved to: {outputFile}");
+
+                        log.Info($"Vidio saved to : {outputFile}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Creation time could not be retrieved or is null.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("The extracted number could not be parsed to an integer.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No valid number found in the file path.");
+            }
+
+           
+           
+
+            
         }
         else
         {
@@ -237,6 +280,7 @@ static async Task<bool> CheckIsTimestampExists(string filePath)
 {
     // Get media information using FFmpeg
     var mediaInfo = await FFmpeg.GetMediaInfo(filePath);
+        return false;
     
     // Split the video into 5 intervals for frame capture
     int frameCount = 5;

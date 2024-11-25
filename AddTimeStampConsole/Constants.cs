@@ -11,6 +11,7 @@ namespace AddTimeStampConsole
     {
         public static readonly string InputVideoPath;
         public static readonly string OutputVideoPath;
+        public static readonly string DbConnection;
 
         static Constants()
         {
@@ -23,6 +24,7 @@ namespace AddTimeStampConsole
 
             InputVideoPath = config["VideoPaths:InputVideoPath"]!;
             OutputVideoPath = config["VideoPaths:OutputVideoPath"]!;
+            DbConnection= config["DatabaseConfig:ConnectionString"]!;
 
         }
     }

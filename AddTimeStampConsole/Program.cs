@@ -191,7 +191,7 @@ class Program
                         long unixTimestamp = creationTimeOffset.ToUnixTimeSeconds();
 
                         Console.WriteLine($"Unix Timestamp: {unixTimestamp}");
-                        string timestampFilter = $"drawtext=fontcolor=white:fontsize=16:box=1:boxcolor=black: x=10:y=10: text='%{{pts\\:gmtime\\:{unixTimestamp}\\:%d, %B %Y %I\\\\\\:%M\\\\\\:%S %p}}'";
+                        string timestampFilter = $"drawtext=fontcolor=white:fontsize=26:box=1:boxcolor=black: x=10:y=10: text='%{{pts\\:gmtime\\:{unixTimestamp}\\:%d, %B %Y %I\\\\\\:%M\\\\\\:%S %p}}'";
 
                         var conversion = FFmpeg.Conversions.New()
                             .AddParameter($"-i \"{inputFile}\"")
@@ -207,6 +207,8 @@ class Program
                     else
                     {
                         Console.WriteLine("Creation time could not be retrieved or is null.");
+                        log.Error("Creation time could not be retrieved or is null.");
+                        File.Move(inputFile, outputFile);
                     }
                 }
                 else

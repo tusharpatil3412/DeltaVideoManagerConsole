@@ -49,9 +49,13 @@ namespace AddTimeStampConsole
                                     double latitude = reader["Latitude"] != DBNull.Value ? Convert.ToDouble(reader["Latitude"]) : 0;
                                     double longitude = reader["Longitude"] != DBNull.Value ? Convert.ToDouble(reader["Longitude"]) : 0;
 
+
                                     Console.WriteLine($"Latitude: {latitude}, Longitude: {longitude}");
 
-                                    // Get time zone ID from coordinates
+                                   if(latitude==0 || longitude == 0)
+                                    {
+                                        return null;
+                                    }
                                     string timeZoneId = TimeZoneLookup.GetTimeZone(latitude, longitude).Result;
 
                                     // Convert UTC to local time zone
@@ -62,11 +66,16 @@ namespace AddTimeStampConsole
                                         Console.WriteLine($"Local Time for Code {code}: {localTime}");
                                         return localTime;
                                     }
+                                    else
+                                    {
+                                        return  null ;
+                                    }
                                 }
                             }
                             else
                             {
                                 Console.WriteLine("No record found for the given code.");
+                                return null;
                             }
                         }
                     }
